@@ -53,6 +53,15 @@
                     android:orientation="horizontal">
 
 
+                    <ImageButton
+                        android:id="@+id/camera_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="15dp"
+                        android:background="@drawable/video_selector"
+                        app:srcCompat="@drawable/camera_switch" />
+
                     <ImageView
                         android:id="@+id/Record0"
                         android:layout_width="wrap_content"
@@ -71,6 +80,14 @@
                         android:background="@drawable/photo_selector"
                         app:srcCompat="@drawable/ic_capture_camera_normal" />
 
+                    <ImageButton
+                        android:id="@+id/camera_split_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="15dp"
+                        android:background="@drawable/photo_selector"
+                        app:srcCompat="@drawable/ic_capture_camera_normal" />
                 </LinearLayout>
 
             </FrameLayout>
