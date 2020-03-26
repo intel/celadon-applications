@@ -41,6 +41,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -63,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
     private Activity mActivity;
@@ -93,7 +95,7 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
     private long mRecordingStartTime;
     private boolean mRecordingTimeCountsDown = false;
     private static final int MSG_UPDATE_RECORD_TIME = 5;
-    private static final String SIZE_HD = "HD 720p";
+    private static final String SIZE_HD = "SD 480p";
 
     /**
      * Whether the app is recording video now
@@ -352,7 +354,14 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                IntelCamera ic_camera = IntelCamera.getInstance();
+                MultiViewActivity Mactivity = (MultiViewActivity) mActivity;
+                if(ic_camera.getIsCameraOrSurveillance() == 1) {
+                    Mactivity.enterFullScreen(v);
+                }
                 takePicture();
+                Mactivity.enableSingleCameraButtons();
+                IntelCamera.getInstance().setIsCameraOrSurveillance(0);
             }
         });
     }
@@ -416,12 +425,23 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
         TakeVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mIsRecordingVideo) {
-                    stopRecordingVideo();
+                IntelCamera ic_camera = IntelCamera.getInstance();
+                MultiViewActivity Mactivity = (MultiViewActivity) mActivity;
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                    if (mIsRecordingVideo) {
+                        stopRecordingVideo();
+                    } else {
+                        if(ic_camera.getIsCameraOrSurveillance() == 1) {
+                            Mactivity.enterFullScreen(view);
+                        }
+                        startRecordingVideo();
+                    }
+                }catch (Exception e) {
 
-                } else {
-                    startRecordingVideo();
                 }
+                Mactivity.enableSingleCameraButtons();
+                IntelCamera.getInstance().setIsCameraOrSurveillance(0);
             }
         });
     }
@@ -627,7 +647,7 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
 
         } else {
             mDimensions = SettingsPrefUtil.sizeFromSettingString(
-                    settings.getString(Capture_Key, "1280x720"));
+                    settings.getString(Capture_Key, "640x480"));
         }
 
         return mDimensions;

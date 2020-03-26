@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import static android.hardware.usb.UsbManager.ACTION_USB_DEVICE_ATTACHED;
 import static android.hardware.usb.UsbManager.ACTION_USB_DEVICE_DETACHED;
@@ -89,6 +90,7 @@ public class MultiViewActivity extends AppCompatActivity {
 
     private int[] FrameVisibility;
     private boolean exitScrnFlag;
+    private boolean exitRecordScrnFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,16 @@ public class MultiViewActivity extends AppCompatActivity {
         set_FrameVisibilities();
 
         openBackCamera();
+
+        exitScrn0.setVisibility(View.GONE);
+        exitScrn1.setVisibility(View.GONE);
+        exitScrn2.setVisibility(View.GONE);
+        exitScrn3.setVisibility(View.GONE);
+
+        FullScrn0.setVisibility(View.GONE);
+        FullScrn1.setVisibility(View.GONE);
+        FullScrn2.setVisibility(View.GONE);
+        FullScrn3.setVisibility(View.GONE);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -487,8 +499,24 @@ public class MultiViewActivity extends AppCompatActivity {
         findViewById(R.id.imageView2).setVisibility(View.VISIBLE);
         findViewById(R.id.imageView3).setVisibility(View.VISIBLE);
 
+        findViewById(R.id.camera_split_view0).setVisibility(View.GONE);
+        findViewById(R.id.camera_split_view1).setVisibility(View.GONE);
+        findViewById(R.id.camera_split_view2).setVisibility(View.GONE);
+        findViewById(R.id.camera_split_view3).setVisibility(View.GONE);
+
     }
     public void visibleCameraSwitchButton() {
+        System.out.println("shiva calling hide camera switch");
+        exitScrn0.setVisibility(View.GONE);
+        exitScrn1.setVisibility(View.GONE);
+        exitScrn2.setVisibility(View.GONE);
+        exitScrn3.setVisibility(View.GONE);
+
+        FullScrn0.setVisibility(View.GONE);
+        FullScrn1.setVisibility(View.GONE);
+        FullScrn2.setVisibility(View.GONE);
+        FullScrn3.setVisibility(View.GONE);
+
         findViewById(R.id.camera_switch0).setVisibility(View.VISIBLE);
         findViewById(R.id.camera_switch1).setVisibility(View.VISIBLE);
         findViewById(R.id.camera_switch2).setVisibility(View.VISIBLE);
@@ -498,6 +526,34 @@ public class MultiViewActivity extends AppCompatActivity {
         findViewById(R.id.imageView1).setVisibility(View.GONE);
         findViewById(R.id.imageView2).setVisibility(View.GONE);
         findViewById(R.id.imageView3).setVisibility(View.GONE);
+
+        findViewById(R.id.camera_split_view0).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_split_view1).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_split_view2).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_split_view3).setVisibility(View.VISIBLE);
+    }
+
+    void enableSingleCameraButtons() {
+        findViewById(R.id.camera_switch0).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_switch1).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_switch2).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_switch3).setVisibility(View.VISIBLE);
+/*
+        findViewById(R.id.camera_split_view0).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_split_view1).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_split_view2).setVisibility(View.VISIBLE);
+        findViewById(R.id.camera_split_view3).setVisibility(View.VISIBLE);
+*/
+        exitScrn0.setVisibility(View.GONE);
+        exitScrn1.setVisibility(View.GONE);
+        exitScrn2.setVisibility(View.GONE);
+        exitScrn3.setVisibility(View.GONE);
+
+        FullScrn0.setVisibility(View.GONE);
+        FullScrn1.setVisibility(View.GONE);
+        FullScrn2.setVisibility(View.GONE);
+        FullScrn3.setVisibility(View.GONE);
+
     }
     private void manageTopRightCam() {
         frameView1.setVisibility(FrameLayout.VISIBLE);
@@ -807,9 +863,17 @@ public class MultiViewActivity extends AppCompatActivity {
         LinLayout1 = findViewById(R.id.TopLayout);
 
         LinLayout2 = findViewById(R.id.BtmLayout);
-
+        IntelCamera ic_camera = IntelCamera.getInstance();
         switch (view.getId()) {
             case R.id.imageView0:
+
+                if(ic_camera.getIsCameraOrSurveillance() == 1) {
+                    openBackCamera();
+                    visibleCameraSwitchButton();
+                    ic_camera.setIsCameraOrSurveillance(0);
+                }
+                break;
+            case R.id.Picture0:
                 this.setTitle("TopLeftCam");
                 exitScrnFlag = true;
                 exitScrn0.setVisibility(View.VISIBLE);
@@ -820,36 +884,88 @@ public class MultiViewActivity extends AppCompatActivity {
                 LinLayout2.setVisibility(View.GONE);
 
                 break;
+            case R.id.Record0:
+                    this.setTitle("TopLeftCam");
+                    if(exitRecordScrnFlag == true) {
+
+                        this.setTitle("MultiCamera");
+                        exitRecordScrnFlag = false;
+                        LinLayout1.setVisibility(View.GONE);
+                        LinLayout2.setVisibility(View.GONE);
+                        if (numOfCameras == 1) {
+                            frameView1.setVisibility(FrameLayout.GONE);
+                            LinLayout1.setVisibility(View.VISIBLE);
+
+                        } else if (numOfCameras == 2) {
+                            LinLayout1.setVisibility(View.VISIBLE);
+                            frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                        } else if (numOfCameras == 3) {
+                            LinLayout1.setVisibility(View.VISIBLE);
+                            LinLayout2.setVisibility(View.VISIBLE);
+
+                        } else if (numOfCameras == 4) {
+                            LinLayout1.setVisibility(View.VISIBLE);
+                            LinLayout2.setVisibility(View.VISIBLE);
+
+                        } else {
+                            Log.d(TAG, "onResume No CAMERA CONNECTED");
+                        }
+                        FullScrn0.setVisibility(View.VISIBLE);
+
+                exitScrn0.setVisibility(View.GONE);
+
+                        FrameVisibility[1] = frameView1.getVisibility();
+                    }else {
+                        exitRecordScrnFlag = true;
+                        exitScrn0.setVisibility(View.GONE);
+                        FullScrn0.setVisibility(View.GONE);
+
+                        frameView1.setVisibility(View.GONE);
+
+                        LinLayout2.setVisibility(View.GONE);
+                    }
+                break;
             case R.id.exitFullScreen0:
+
                 this.setTitle("MultiCamera");
                 exitScrnFlag = false;
+                LinLayout1.setVisibility(View.GONE);
+                LinLayout2.setVisibility(View.GONE);
+                if (numOfCameras == 1) {
+                    frameView1.setVisibility(FrameLayout.GONE);
+                    LinLayout1.setVisibility(View.VISIBLE);
 
+                } else if (numOfCameras == 2) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                } else if (numOfCameras == 3) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else if (numOfCameras == 4) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else {
+                    Log.d(TAG, "onResume No CAMERA CONNECTED");
+                }
                 FullScrn0.setVisibility(View.VISIBLE);
 
                 exitScrn0.setVisibility(View.GONE);
 
-                switch (FrameVisibility[1]) {
-                    case View.VISIBLE:
-
-                        frameView1.setVisibility(View.VISIBLE);
-
-                        break;
-
-                    case View.INVISIBLE:
-
-                        frameView1.setVisibility(View.INVISIBLE);
-
-                        break;
-                    default:
-                        break;
-                }
-
                 FrameVisibility[1] = frameView1.getVisibility();
-
-                LinLayout2.setVisibility(View.VISIBLE);
 
                 break;
             case R.id.imageView1:
+                if(ic_camera.getIsCameraOrSurveillance() == 1) {
+                    openFrontCamera();
+                    visibleCameraSwitchButton();
+                    ic_camera.setIsCameraOrSurveillance(0);
+                }
+                break;
+            case R.id.Picture1:
                 this.setTitle("TopRightCam");
                 exitScrnFlag = true;
                 FullScrn1.setVisibility(View.GONE);
@@ -859,12 +975,35 @@ public class MultiViewActivity extends AppCompatActivity {
                 LinLayout2.setVisibility(View.GONE);
 
                 break;
-            case R.id.exitFullScreen1:
-                this.setTitle("MultiCamera");
+            case R.id.Record1:
+                this.setTitle("TopRightCam");
+                if(exitRecordScrnFlag == true) {
+                    this.setTitle("MultiCamera");
+                    exitRecordScrnFlag = false;
+                    LinLayout1.setVisibility(View.GONE);
+                    LinLayout2.setVisibility(View.GONE);
+                    if (numOfCameras == 1) {
+                        frameView1.setVisibility(FrameLayout.GONE);
+                        LinLayout1.setVisibility(View.VISIBLE);
 
-                exitScrnFlag = false;
-                FullScrn1.setVisibility(View.VISIBLE);
-                exitScrn1.setVisibility(View.GONE);
+                    } else if (numOfCameras == 2) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                    } else if (numOfCameras == 3) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        LinLayout2.setVisibility(View.VISIBLE);
+
+                    } else if (numOfCameras == 4) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        LinLayout2.setVisibility(View.VISIBLE);
+
+                    } else {
+                        Log.d(TAG, "onResume No CAMERA CONNECTED");
+                    }
+
+                    FullScrn1.setVisibility(View.VISIBLE);
+                    exitScrn1.setVisibility(View.GONE);
 
                 switch (FrameVisibility[0]) {
                     case View.VISIBLE:
@@ -882,13 +1021,64 @@ public class MultiViewActivity extends AppCompatActivity {
                         break;
                 }
 
+                    FrameVisibility[0] = frameView0.getVisibility();
+                }else {
+                    exitRecordScrnFlag = true;
+                    FullScrn1.setVisibility(View.GONE);
+                    exitScrn1.setVisibility(View.GONE);
+
+                    frameView0.setVisibility(View.GONE);
+                    LinLayout2.setVisibility(View.GONE);
+                }
+                break;
+            case R.id.exitFullScreen1:
+                this.setTitle("MultiCamera");
+
+                exitScrnFlag = false;
+                LinLayout1.setVisibility(View.GONE);
+                LinLayout2.setVisibility(View.GONE);
+                if (numOfCameras == 1) {
+                    frameView1.setVisibility(FrameLayout.GONE);
+                    LinLayout1.setVisibility(View.VISIBLE);
+
+                } else if (numOfCameras == 2) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                } else if (numOfCameras == 3) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else if (numOfCameras == 4) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else {
+                    Log.d(TAG, "onResume No CAMERA CONNECTED");
+                }
+
+                FullScrn1.setVisibility(View.VISIBLE);
+                exitScrn1.setVisibility(View.GONE);
+
+                switch (FrameVisibility[0]) {
+                    case View.VISIBLE:
+                        frameView0.setVisibility(View.VISIBLE);
+                        break;
+
+                    case View.INVISIBLE:
+
+                        frameView0.setVisibility(View.INVISIBLE);
+
+                        break;
+                    default:
+                        break;
+                }
+
                 FrameVisibility[0] = frameView0.getVisibility();
-
-                LinLayout2.setVisibility(View.VISIBLE);
-
                 break;
 
             case R.id.imageView2:
+            case R.id.Picture2:
                 this.setTitle("BotmLeftCam");
 
                 exitScrnFlag = true;
@@ -899,10 +1089,90 @@ public class MultiViewActivity extends AppCompatActivity {
                 LinLayout1.setVisibility(View.GONE);
 
                 break;
+            case R.id.Record2:
+                this.setTitle("BotmLeftCam");
+                if(exitRecordScrnFlag == true) {
+                    this.setTitle("MultiCamera");
+
+                    exitRecordScrnFlag = false;
+                    LinLayout1.setVisibility(View.GONE);
+                    LinLayout2.setVisibility(View.GONE);
+                    if (numOfCameras == 1) {
+                        frameView1.setVisibility(FrameLayout.GONE);
+                        LinLayout1.setVisibility(View.VISIBLE);
+
+                    } else if (numOfCameras == 2) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                    } else if (numOfCameras == 3) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        LinLayout2.setVisibility(View.VISIBLE);
+
+                    } else if (numOfCameras == 4) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        LinLayout2.setVisibility(View.VISIBLE);
+
+                    } else {
+                        Log.d(TAG, "onResume No CAMERA CONNECTED");
+                    }
+
+                    FullScrn2.setVisibility(View.VISIBLE);
+                    exitScrn2.setVisibility(View.GONE);
+
+                switch (FrameVisibility[3]) {
+                    case View.VISIBLE:
+
+                        frameView3.setVisibility(View.VISIBLE);
+
+                        break;
+
+                    case View.INVISIBLE:
+
+                        frameView3.setVisibility(View.INVISIBLE);
+
+                        break;
+                    default:
+                        break;
+                }
+
+                FrameVisibility[3] = frameView3.getVisibility();
+
+                }else {
+                    exitRecordScrnFlag = true;
+                    FullScrn2.setVisibility(View.GONE);
+                    exitScrn2.setVisibility(View.GONE);
+
+                    frameView3.setVisibility(View.GONE);
+                    LinLayout1.setVisibility(View.GONE);
+                }
+                break;
             case R.id.exitFullScreen2:
                 this.setTitle("MultiCamera");
 
                 exitScrnFlag = false;
+                LinLayout1.setVisibility(View.GONE);
+                LinLayout2.setVisibility(View.GONE);
+                if (numOfCameras == 1) {
+                    frameView1.setVisibility(FrameLayout.GONE);
+                    LinLayout1.setVisibility(View.VISIBLE);
+
+                } else if (numOfCameras == 2) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                } else if (numOfCameras == 3) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else if (numOfCameras == 4) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else {
+                    Log.d(TAG, "onResume No CAMERA CONNECTED");
+                }
+
                 FullScrn2.setVisibility(View.VISIBLE);
                 exitScrn2.setVisibility(View.GONE);
 
@@ -923,11 +1193,9 @@ public class MultiViewActivity extends AppCompatActivity {
                 }
 
                 FrameVisibility[3] = frameView3.getVisibility();
-
-                LinLayout1.setVisibility(View.VISIBLE);
-
                 break;
             case R.id.imageView3:
+            case R.id.Picture3:
                 this.setTitle("BotmRightCam");
                 exitScrnFlag = true;
                 FullScrn3.setVisibility(View.GONE);
@@ -937,9 +1205,89 @@ public class MultiViewActivity extends AppCompatActivity {
                 LinLayout1.setVisibility(View.GONE);
 
                 break;
+            case R.id.Record3:
+                if(exitRecordScrnFlag == true) {
+                    this.setTitle("MultiCamera");
+                    exitRecordScrnFlag = false;
+
+                    LinLayout1.setVisibility(View.GONE);
+                    LinLayout2.setVisibility(View.GONE);
+                    if (numOfCameras == 1) {
+                        frameView1.setVisibility(FrameLayout.GONE);
+                        LinLayout1.setVisibility(View.VISIBLE);
+
+                    } else if (numOfCameras == 2) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                    } else if (numOfCameras == 3) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        LinLayout2.setVisibility(View.VISIBLE);
+
+                    } else if (numOfCameras == 4) {
+                        LinLayout1.setVisibility(View.VISIBLE);
+                        LinLayout2.setVisibility(View.VISIBLE);
+
+                    } else {
+                        Log.d(TAG, "onResume No CAMERA CONNECTED");
+                    }
+
+                    FullScrn3.setVisibility(View.VISIBLE);
+                    exitScrn3.setVisibility(View.GONE);
+
+                switch (FrameVisibility[2]) {
+                    case View.VISIBLE:
+
+                        frameView2.setVisibility(View.VISIBLE);
+
+                        break;
+
+                    case View.INVISIBLE:
+
+                        frameView2.setVisibility(View.INVISIBLE);
+
+                        break;
+                    default:
+                        break;
+                }
+
+                    FrameVisibility[2] = frameView2.getVisibility();
+                }else {
+                    this.setTitle("BotmRightCam");
+                    exitRecordScrnFlag = true;
+                    FullScrn3.setVisibility(View.GONE);
+                    exitScrn3.setVisibility(View.GONE);
+
+                    frameView2.setVisibility(View.GONE);
+                    LinLayout1.setVisibility(View.GONE);
+                }
+                break;
             case R.id.exitFullScreen3:
                 this.setTitle("MultiCamera");
                 exitScrnFlag = false;
+
+                LinLayout1.setVisibility(View.GONE);
+                LinLayout2.setVisibility(View.GONE);
+                if (numOfCameras == 1) {
+                    frameView1.setVisibility(FrameLayout.GONE);
+                    LinLayout1.setVisibility(View.VISIBLE);
+
+                } else if (numOfCameras == 2) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    frameView1.setVisibility(FrameLayout.VISIBLE);
+
+                } else if (numOfCameras == 3) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else if (numOfCameras == 4) {
+                    LinLayout1.setVisibility(View.VISIBLE);
+                    LinLayout2.setVisibility(View.VISIBLE);
+
+                } else {
+                    Log.d(TAG, "onResume No CAMERA CONNECTED");
+                }
+
                 FullScrn3.setVisibility(View.VISIBLE);
                 exitScrn3.setVisibility(View.GONE);
 
@@ -960,9 +1308,6 @@ public class MultiViewActivity extends AppCompatActivity {
                 }
 
                 FrameVisibility[2] = frameView2.getVisibility();
-
-                LinLayout1.setVisibility(View.VISIBLE);
-
                 break;
             default:
                 break;
