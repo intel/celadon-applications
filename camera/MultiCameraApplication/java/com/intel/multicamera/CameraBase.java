@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -40,6 +41,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -62,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
     private Activity mActivity;
@@ -70,7 +73,7 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
      * An {@link AutoFitTextureView} for camera preview.
      */
     private AutoFitTextureView textureView;
-    private ImageButton FullScrn, SettingsView, takePictureButton, TakeVideoButton;
+    private ImageButton FullScrn, SettingsView, takePictureButton, TakeVideoButton, cameraSwitch, cameraSplit;
 
     private MediaRecorder mMediaRecorder;
     private String cameraId;
@@ -92,7 +95,7 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
     private long mRecordingStartTime;
     private boolean mRecordingTimeCountsDown = false;
     private static final int MSG_UPDATE_RECORD_TIME = 5;
-    private static final String SIZE_HD = "HD 720p";
+    private static final String SIZE_HD = "SD 480p";
 
     /**
      * Whether the app is recording video now
@@ -132,7 +135,7 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
                       RoundedThumbnailView roundedThumbnailView) {
         this.mActivity = activity;
         this.textureView = mtextureView;
-        this.ClickListeners(Button[0], Button[1]);
+        this.ClickListeners(Button[0], Button[1], Button[4], Button[5]);
         SettingsView = Button[2];
         FullScrn = Button[3];
         this.settings = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -336,10 +339,12 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
         }
     }
 
-    private void ClickListeners(ImageButton PictureButton, ImageButton RecordButton) {
+    private void ClickListeners(ImageButton PictureButton, ImageButton RecordButton, ImageButton CameraSwitch, ImageButton CameraSplit) {
         TakePicureOnClicked(PictureButton);
 
         StartVideoRecording(RecordButton);
+        CameraSwitch(CameraSwitch);
+        CameraSplit(CameraSplit);
     }
 
     private void TakePicureOnClicked(ImageButton PictureButton) {
@@ -349,7 +354,66 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MultiCamera ic_camera = MultiCamera.getInstance();
+                MultiViewActivity Mactivity = (MultiViewActivity) mActivity;
+                if(ic_camera.getIsCameraOrSurveillance() == 1) {
+                    Mactivity.enterFullScreen(v);
+                }
                 takePicture();
+                Mactivity.enableSingleCameraButtons();
+                MultiCamera.getInstance().setIsCameraOrSurveillance(0);
+            }
+        });
+    }
+
+    private void CameraSwitch(ImageButton CameraSwitch) {
+        cameraSwitch = CameraSwitch;
+        if (cameraSwitch == null) return;
+
+        cameraSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                MultiCamera ic_camera = MultiCamera.getInstance();
+                if(ic_camera.getWhichCamera() == 0) {
+                    MultiViewActivity Mactivity = (MultiViewActivity) mActivity;
+                    Mactivity.openFrontCamera();
+                    ic_camera.setWhichCamera(1);
+                }
+                else {
+                    MultiViewActivity Mactivity = (MultiViewActivity) mActivity;
+                    Mactivity.openBackCamera();
+                    ic_camera.setWhichCamera(0);
+                }
+            }
+        });
+    }
+
+    private void CameraSplit(ImageButton cameraSplit) {
+        cameraSplit = cameraSplit;
+        if (cameraSplit == null) return;
+
+        cameraSplit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(mActivity, "camera split clicked ", Toast.LENGTH_LONG).show();
+                MultiCamera ic_camera = MultiCamera.getInstance();
+                MultiViewActivity Mactivity = (MultiViewActivity) mActivity;
+                if(ic_camera.getIsCameraOrSurveillance() == 0){
+                    Mactivity.startCamera();
+                    Mactivity.hideCameraSwitchButton();
+                    ic_camera.setIsCameraOrSurveillance(1);
+                }
+                else {
+                    Mactivity.visibleCameraSwitchButton();
+                    if(ic_camera.getWhichCamera() == 0) {
+                        Mactivity.openBackCamera();
+                    }
+                    else {
+                        Mactivity.openFrontCamera();
+                    }
+                    ic_camera.setIsCameraOrSurveillance(0);
+                }
             }
         });
     }
@@ -360,12 +424,23 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
         TakeVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mIsRecordingVideo) {
-                    stopRecordingVideo();
+                MultiCamera ic_camera = MultiCamera.getInstance();
+                MultiViewActivity Mactivity = (MultiViewActivity) mActivity;
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                    if (mIsRecordingVideo) {
+                        stopRecordingVideo();
+                    } else {
+                        if(ic_camera.getIsCameraOrSurveillance() == 1) {
+                            Mactivity.enterFullScreen(view);
+                        }
+                        startRecordingVideo();
+                    }
+                }catch (Exception e) {
 
-                } else {
-                    startRecordingVideo();
                 }
+                Mactivity.enableSingleCameraButtons();
+                MultiCamera.getInstance().setIsCameraOrSurveillance(0);
             }
         });
     }
@@ -571,7 +646,7 @@ public class CameraBase implements MediaRecorder.OnErrorListener, MediaRecorder.
 
         } else {
             mDimensions = SettingsPrefUtil.sizeFromSettingString(
-                    settings.getString(Capture_Key, "1280x720"));
+                    settings.getString(Capture_Key, "640x480"));
         }
 
         return mDimensions;
