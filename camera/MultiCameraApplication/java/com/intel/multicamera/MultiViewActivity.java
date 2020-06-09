@@ -128,26 +128,6 @@ public class MultiViewActivity extends AppCompatActivity {
         FullScrn2.setVisibility(View.GONE);
         FullScrn3.setVisibility(View.GONE);
         startCamera();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-
-        // BroadcastReceiver when insert/remove the device USB plug into/from a USB port
-        mUsbReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                System.out.println("BroadcastReceiver Event");
-                if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                    System.out.println(TAG + "BroadcastReceiver USB Connected");
-                    startCamera();
-
-                } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                    System.out.println(TAG + "BroadcastReceiver USB Disconnected");
-                    startCamera();
-                }
-            }
-        };
-        registerReceiver(mUsbReceiver , filter);
     }
 
     void startCamera() {
@@ -628,8 +608,6 @@ public class MultiViewActivity extends AppCompatActivity {
     protected void onPause() {
         Log.e(TAG, "onPause");
         super.onPause();
-
-        unregisterReceiver(mUsbReceiver);
 
     }
 
