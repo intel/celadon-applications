@@ -214,8 +214,20 @@ public class SingleCameraActivity extends AppCompatActivity {
         if (numOfCameras == 0) {
             Toast.makeText(SingleCameraActivity.this, "No Camera Found", Toast.LENGTH_LONG).show();
             System.out.println(TAG+" no camera found");
+            mCameraSwitch.setEnabled(false);
+            mCameraPicture.setEnabled(false);
+            mCameraRecord.setEnabled(false);
+            mCameraSplit.setEnabled(false);
+            mSettings.setEnabled(false);
             return;
         }
+
+        mCameraSwitch.setEnabled(true);
+        mCameraPicture.setEnabled(true);
+        mCameraRecord.setEnabled(true);
+        mCameraSplit.setEnabled(true);
+        mSettings.setEnabled(true);
+
         if (numOfCameras == 1) {
             findViewById(R.id.camera_switch).setVisibility(View.GONE);
             findViewById(R.id.camera_split_view).setVisibility(View.GONE);
