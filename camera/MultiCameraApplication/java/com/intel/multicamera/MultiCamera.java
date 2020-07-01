@@ -32,10 +32,12 @@ public class MultiCamera {
     private Uri mCurrentUri;
     private ContentValues mCurrentFileInfo;
 
+    private int isPopupShown;
     MultiCamera() {
         mWhichCamera = 0;
         mIsCameraOrSurveillance = 0;
         mOpenCameraId = -1;
+        isPopupShown = 0;
     }
     public static MultiCamera getInstance() {
         if (ic_instance == null) {
@@ -119,5 +121,12 @@ public class MultiCamera {
 
     public void setOpenCameraId(int openCameraId) {
         mOpenCameraId = openCameraId;
+    }
+    public int getIsPopupShown() {
+        return isPopupShown;
+    }
+
+    public void setIsPopupShown(int isPopupShown) {
+        this.isPopupShown = isPopupShown;
     }
 }
