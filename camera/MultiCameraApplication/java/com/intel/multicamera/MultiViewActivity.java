@@ -290,6 +290,11 @@ public class MultiViewActivity extends AppCompatActivity {
         SettingView2 = findViewById(R.id.SettingView2);
         SettingView3 = findViewById(R.id.SettingView3);
 
+        SettingView0.setVisibility(View.GONE);
+        SettingView1.setVisibility(View.GONE);
+        SettingView2.setVisibility(View.GONE);
+        SettingView3.setVisibility(View.GONE);
+
         SettingClose0 = findViewById(R.id.mSettingClose0);
         SettingClose1 = findViewById(R.id.mSettingClose1);
         SettingClose2 = findViewById(R.id.mSettingClose2);

@@ -44,6 +44,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +69,9 @@ public class SingleCameraActivity extends AppCompatActivity {
     private BroadcastReceiver mUsbReceiver;
     private long mLastClickTime = 0;
 
+    private SettingsPrefUtil Fragment;
 
+    private ImageButton mSettingClose;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +97,7 @@ public class SingleCameraActivity extends AppCompatActivity {
         mCameraSplit = findViewById(R.id.camera_split_view);
         mRecordingTimeView = findViewById(R.id.recording_time);
         mSettings = findViewById(R.id.SettingView);
+        mSettingClose = findViewById(R.id.SettingClose);
         mRoundedThumbnailView = findViewById(R.id.rounded_thumbnail_view);
 
         checkPermissions();
@@ -248,6 +252,56 @@ public class SingleCameraActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bundle bundle;
+                mSettingClose.setVisibility(View.VISIBLE);
+
+                bundle = new Bundle();
+                MultiCamera ic_camera = MultiCamera.getInstance();
+                bundle.putString("Camera_id", CameraIds[0]);
+                bundle.putInt("root_preferences", R.xml.root_preferences);
+                bundle.putString("pref_resolution", "pref_resolution");
+                bundle.putString("video_list", "video_list");
+                bundle.putString("capture_list", "capture_list");
+
+                Fragment = new SettingsPrefUtil();
+                Fragment.setArguments(bundle);
+
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.PrefScrnSettings, Fragment)
+                        .commit();
+
+                mSettings.setVisibility(View.GONE);
+                mSettingClose.setVisibility(View.VISIBLE);
+                mCameraRecord.setVisibility(View.GONE);
+                mCameraPicture.setVisibility(View.GONE);
+                mCameraSwitch.setVisibility(View.GONE);
+                mCameraSplit.setVisibility(View.GONE);
+            }
+        });
+
+
+        mSettingClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getFragmentManager().beginTransaction().remove(Fragment).commit();
+
+                v.setVisibility(v.GONE);
+                mSettings.setVisibility(View.VISIBLE);
+
+                mCameraRecord.setVisibility(View.VISIBLE);
+                mCameraPicture.setVisibility(View.VISIBLE);
+                mCameraSwitch.setVisibility(View.VISIBLE);
+                mCameraSplit.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     public void OpenCamera() {
