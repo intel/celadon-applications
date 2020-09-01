@@ -356,6 +356,7 @@ public class CameraBase  {
     private void ResetResolutionSettings() {
         SharedPreferences.Editor edit = settings.edit();
         edit.remove(Capture_Key);
+        edit.remove(Video_key);
         edit.apply();
     }
 
