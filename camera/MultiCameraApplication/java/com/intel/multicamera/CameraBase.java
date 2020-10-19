@@ -92,6 +92,7 @@ public class CameraBase  {
     private CameraBase mCameraBase;
     private static final String SIZE_HD = "HD 720p";
 
+    private static int previewRetry = 0;
     /**
      * Whether the app is recording video now
      */
@@ -497,15 +498,18 @@ public class CameraBase  {
                             // When the session is ready, we start displaying the preview.
                             cameraCaptureSessions = cameraCaptureSession;
                             updatePreview();
+                            previewRetry = 0;
                         }
 
                         @Override
                         public void onConfigureFailed(CameraCaptureSession cameraCaptureSession) {
-                            closeCamera();
-                            Toast.makeText(mActivity, " Preview Configuration change",
-                                           Toast.LENGTH_SHORT)
-                                    .show();
-                        }
+                            System.out.println("Preview Configuration change Retry");
+                            if (previewRetry < 5)
+                                createCameraPreview();
+                            else
+                                Toast.makeText(mActivity, "Preview Configuration failed", Toast.LENGTH_LONG).show();
+                            previewRetry++;                        
+                        } 
                     }, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
