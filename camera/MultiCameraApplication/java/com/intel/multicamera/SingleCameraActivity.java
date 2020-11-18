@@ -59,7 +59,7 @@ public class SingleCameraActivity extends AppCompatActivity {
     private int numOfCameras;
     private AutoFitTextureView mCamera_BackView, mCamera_FrontView;
 
-    private ImageButton mCameraSwitch, mCameraPicture, mCameraRecord, mCameraSplit, mSettings;
+    private ImageButton mCameraSwitch, mCameraPicture, mCameraRecord, mCameraSplit, mSettings, mSettingClose;
     public String[] CameraIds;
     MultiCamera mCameraInst;
     private TextView mRecordingTimeView;
@@ -70,8 +70,6 @@ public class SingleCameraActivity extends AppCompatActivity {
     private long mLastClickTime = 0;
 
     private SettingsPrefUtil Fragment;
-
-    private ImageButton mSettingClose;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -299,6 +297,7 @@ public class SingleCameraActivity extends AppCompatActivity {
                 mCameraPicture.setVisibility(View.VISIBLE);
                 mCameraSwitch.setVisibility(View.VISIBLE);
                 mCameraSplit.setVisibility(View.VISIBLE);
+                mCamera.createCameraPreview();
             }
         });
 
