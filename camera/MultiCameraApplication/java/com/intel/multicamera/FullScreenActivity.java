@@ -100,8 +100,9 @@ public class FullScreenActivity extends AppCompatActivity {
         mSettings = findViewById(R.id.SettingView);
         mSettingClose = findViewById(R.id.SettingClose);
         mRoundedThumbnailView = findViewById(R.id.rounded_thumbnail_view);
-
+System.out.println("shiva get permission");
         checkPermissions();
+System.out.println("shiva open camera");
 
         openBackCamera();
         try {
@@ -319,12 +320,14 @@ public class FullScreenActivity extends AppCompatActivity {
     }
 
     public void openBackCamera() {
+	System.out.println("shiva Open back camera");
         closeCamera();
+        System.out.println("shiva Open back camera 1");
 
         GetCameraCnt();
         if (numOfCameras == 0) {
             Toast.makeText(FullScreenActivity.this, "No Camera Found", Toast.LENGTH_LONG).show();
-            System.out.println(TAG+" no camera found");
+            System.out.println(TAG+"shiva no camera found");
             return;
         }
         if (numOfCameras == 1) {
@@ -334,16 +337,24 @@ public class FullScreenActivity extends AppCompatActivity {
 
         updateStorageSpace(null);
 
+        System.out.println("shiva Open back camera 2");
+
         OpenOnlyBackCamera();
+        System.out.println("shiva Open back camera 3");
+
     }
 
     public void openFrontCamera() {
+        System.out.println("shiva Open front camera");
+
         closeCamera();
 
         GetCameraCnt();
         updateStorageSpace(null);
 
         OpenOnlyFrontCamera();
+        System.out.println("shiva Open front camera end");
+
     }
 
     private void OpenOnlyFrontCamera() {
@@ -389,19 +400,23 @@ public class FullScreenActivity extends AppCompatActivity {
                 Toast.makeText(FullScreenActivity.this, "No camera found closing the application",
                     Toast.LENGTH_LONG).show();
             }
-            Log.d(TAG, "Get total number of cameras present: " + manager.getCameraIdList().length);
+            Log.d(TAG, "shiva Get total number of cameras present: " + manager.getCameraIdList().length);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
 
     private void OpenOnlyBackCamera() {
+        System.out.println("shiva OpenOnlyBackCamera");
+
         mCamera_BackView = findViewById(R.id.textureview);
         if (mCamera_BackView == null) {
-            Log.e(TAG, "fail to find surface for back camera");
+            Log.e(TAG, "shiva fail to find surface for back camera");
             return;
         }
         if (mCameraBack == null) {
+        System.out.println("shiva Open back camera start");
+
             Open_BackCamera();
         }
         if (mCamera_BackView.isAvailable()) {
@@ -421,7 +436,7 @@ public class FullScreenActivity extends AppCompatActivity {
         Data[2] = "capture_list";
         Data[3] = "video_list";
         Data[4] = "pref_resolution_1";
-
+System.out.println("shiva Open_BackCamera");
         mCameraBack = new CameraBase(this, mCamera_BackView, null, mRecordingTimeView,
                 Data, mRoundedThumbnailView);
     }
@@ -467,7 +482,7 @@ public class FullScreenActivity extends AppCompatActivity {
         }
 
         if (!mHasCriticalPermissions) {
-            Log.v(TAG, "onCreate: Missing critical permissions.");
+            Log.v(TAG, "shiva onCreate: Missing critical permissions.");
             finish();
             return;
         }
@@ -482,7 +497,7 @@ public class FullScreenActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume");
+        Log.e(TAG, "shiva onResume");
         MultiCamera ic_cam = MultiCamera.getInstance();
         ic_cam.setIsCameraOrSurveillance(0);
         if (ic_cam.getWhichCamera() == 0) {
