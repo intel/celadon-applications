@@ -231,13 +231,12 @@ public class FullScreenActivity extends AppCompatActivity {
                 mCameraPicture.setVisibility(View.VISIBLE);
                 mCameraSwitch.setVisibility(View.VISIBLE);
                 mCameraSplit.setVisibility(View.VISIBLE);
-                if (ic_camera.getWhichCamera() == 0) {
+                if (ic_camera.getWhichCamera() == 1) {
                     mCameraFront.createCameraPreview();
                 }
                 else {
                     mCameraBack.createCameraPreview();
                 }
-
             }
         });
 
