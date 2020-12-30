@@ -301,6 +301,7 @@ public class SingleCameraActivity extends AppCompatActivity {
                 mCameraPicture.setVisibility(View.VISIBLE);
                 mCameraSwitch.setVisibility(View.VISIBLE);
                 mCameraSplit.setVisibility(View.VISIBLE);
+                mCamera.createCameraPreview();
             }
         });
 
