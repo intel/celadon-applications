@@ -349,15 +349,9 @@ public class CameraBase  {
             configureTransform(textureView.getWidth(), textureView.getHeight());
             SurfaceUtil.clear(mSurfaceTexture);
 
-            ResetResolutionSettings();
         }
     };
 
-    private void ResetResolutionSettings() {
-        SharedPreferences.Editor edit = settings.edit();
-        edit.remove(Capture_Key);
-        edit.apply();
-    }
 
     private void configureTransform(int viewWidth, int viewHeight) {
         if (null == textureView || null == previewSize) {

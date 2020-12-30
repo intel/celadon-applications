@@ -225,7 +225,7 @@ public class FullScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 getFragmentManager().beginTransaction().remove(Fragment).commit();
-
+                MultiCamera ic_camera = MultiCamera.getInstance();
                 v.setVisibility(v.GONE);
                 mSettings.setVisibility(View.VISIBLE);
 
@@ -233,6 +233,12 @@ public class FullScreenActivity extends AppCompatActivity {
                 mCameraPicture.setVisibility(View.VISIBLE);
                 mCameraSwitch.setVisibility(View.VISIBLE);
                 mCameraSplit.setVisibility(View.VISIBLE);
+                if (ic_camera.getWhichCamera() == 1) {
+                    mCameraFront.createCameraPreview();
+                }
+                else {
+                    mCameraBack.createCameraPreview();
+                }
             }
         });
 
