@@ -318,6 +318,8 @@ public class MultiViewActivity extends AppCompatActivity {
     }
 
     public void Open_TopLeftCam() {
+        System.out.println(TAG+"open top left camera  start");
+
         String[] Data = new String[5];
         ImageButton[] Buttons = new ImageButton[6];
 
@@ -362,9 +364,13 @@ public class MultiViewActivity extends AppCompatActivity {
 
         ic_camera.setTopLeftCam(new CameraBase(this, mTopLeftCam_textureView, Buttons, mRecordingTimeView,
                                      Data, roundedThumbnailView));
+        System.out.println(TAG+"open top left camera  end");
+
     }
 
     public void Open_TopRightCam() {
+        System.out.println(TAG+"open top right camera  start");
+
         String[] Data = new String[5];
         ImageButton[] Buttons = new ImageButton[6];
         mTopRightCam_textureView = findViewById(R.id.textureview1);
@@ -408,9 +414,13 @@ public class MultiViewActivity extends AppCompatActivity {
 
         ic_camera.setTopRightCam(new CameraBase(this, mTopRightCam_textureView, Buttons,
                                       mRecordingTimeView0, Data, roundedThumbnailView));
+        System.out.println(TAG+"open top right camera  end");
+
     }
 
     public void Open_BotmLeftCam() {
+        System.out.println(TAG+"open bot left camera  start");
+
         String[] Data = new String[5];
         ImageButton[] Buttons = new ImageButton[6];
         mBotmLeftCam_textureView = findViewById(R.id.textureview2);
@@ -455,9 +465,13 @@ public class MultiViewActivity extends AppCompatActivity {
 
         ic_camera.setBotLeftCam(new CameraBase(this, mBotmLeftCam_textureView, Buttons,
                                       mRecordingTimeView1, Data, roundedThumbnailView));
+        System.out.println(TAG+"open top left camera  end");
+
     }
 
     public void Open_BotmRightCam() {
+	System.out.println(TAG+"open bot right camera  start");
+
         String[] Data = new String[5];
         ImageButton[] Buttons = new ImageButton[6];
         mBotmRightCam_textureView = findViewById(R.id.textureview3);
@@ -500,6 +514,8 @@ public class MultiViewActivity extends AppCompatActivity {
 
         ic_camera.setBotRightCam(new CameraBase(this, mBotmRightCam_textureView, Buttons,
                                        mRecordingTimeView2, Data, roundedThumbnailView));
+        System.out.println(TAG+"open bot right camera  end");
+
     }
 
     private void manageTopLeftCam() {
@@ -666,6 +682,16 @@ public class MultiViewActivity extends AppCompatActivity {
             ic_camera.getBotLeftCam().closeCamera();
             ic_camera.setBotLeftCam(null);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            unregisterReceiver(ic_camera.getmUsbReceiver());
+        }catch (Exception e) {
+            Log.e(TAG, "fatal during unregister receiver");
+        }
+        super.onDestroy();
     }
 
     @Override
