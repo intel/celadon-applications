@@ -740,6 +740,7 @@ public class CameraBase  {
         uri = Utils.broadcastNewPicture(mActivity.getApplicationContext(), mCurrentPictureValues);
 
         ic_camera.setCurrentUri(uri);
+        ic_camera.setImagePath(ImageFile.getAbsolutePath());
 
         ic_camera.setCurrentFileInfo(mCurrentPictureValues);
 

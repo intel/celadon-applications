@@ -105,7 +105,7 @@ public class PhotoPreview {
                         preView = mActivity.findViewById(R.id.preview);
 
                         Uri uri = ic_camera.getCurrentUri();
-                        File file = new File(Utils.getRealPathFromURI(mActivity, uri));
+                        File file = new File(ic_camera.getImagePath());
                         if (file.exists()) {
                             Log.v(TAG, " Thumbnail Preview File Deleted ");
                             file.delete();
@@ -150,8 +150,9 @@ public class PhotoPreview {
     }
 
     private void VideoPreview(ImageButton playButton, ImageView preView) {
+        final Uri videoUri = Uri.fromFile(new File(ic_camera.getImagePath()));
         final Optional<Bitmap> bitmap =
-                Utils.getVideoThumbnail(mActivity.getContentResolver(), ic_camera.getCurrentUri());
+                Utils.getVideoThumbnail(mActivity.getContentResolver(), videoUri);
         if (bitmap.isPresent()) {
             playButton.setVisibility(View.VISIBLE);
 
@@ -175,7 +176,8 @@ public class PhotoPreview {
 
         preView.setVisibility(View.VISIBLE);
         playButton.setVisibility(View.GONE);
-        preView.setImageURI(PhotoUri);
+
+        preView.setImageURI(Uri.fromFile(new File(ic_camera.getImagePath())));
     }
 
     public void showImageThumbnail(File ImageFile) {
@@ -215,10 +217,11 @@ public class PhotoPreview {
 
 
     public void showVideoThumbnail() {
+        final Uri videoUri = Uri.fromFile(new File(ic_camera.getImagePath()));
         mRoundedThumbnailView.startRevealThumbnailAnimation("Video taken");
 
         final Optional<Bitmap> bitmap =
-                Utils.getVideoThumbnail(mActivity.getContentResolver(), ic_camera.getCurrentUri());
+                Utils.getVideoThumbnail(mActivity.getContentResolver(), videoUri);
 
         if (bitmap.isPresent()) {
             mRoundedThumbnailView.setThumbnail(bitmap.get(), 0);
