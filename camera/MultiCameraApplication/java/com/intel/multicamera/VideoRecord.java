@@ -729,6 +729,7 @@ public class VideoRecord implements MediaRecorder.OnErrorListener, MediaRecorder
 
         ic_camera.setCurrentUri(uri);
 
+        ic_camera.setImagePath(mVideoFilename);
         ic_camera.setCurrentFileInfo(mCurrentVideoValues);
 
         Log.i(TAG, "video saved @: " + mVideoFilename);
