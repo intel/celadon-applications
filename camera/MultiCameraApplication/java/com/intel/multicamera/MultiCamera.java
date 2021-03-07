@@ -33,6 +33,7 @@ public class MultiCamera {
     private Uri mCurrentUri;
     private ContentValues mCurrentFileInfo;
 
+    private String imagePath;
     MultiCamera() {
         mWhichCamera = 0;
         mIsCameraOrSurveillance = 0;
@@ -123,5 +124,13 @@ public class MultiCamera {
     }
     public static int getUsbCamDeviceClass() {
         return usb_dev_id;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
