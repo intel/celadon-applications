@@ -36,6 +36,7 @@ import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -80,6 +81,9 @@ public class FullScreenActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         isDialogShown = 0;
         ActionBar actionBar = getSupportActionBar();
