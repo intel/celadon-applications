@@ -190,6 +190,7 @@ public class FullScreenActivity extends AppCompatActivity {
                 else {
                     mCameraInst.setOpenCameraId(0);
                     ic_camera.setWhichCamera(0);
+
                     Log.i(TAG,"Opened back camera");
                     closeCamera();
                     unregisterReceiver(mUsbReceiver);
