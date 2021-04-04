@@ -443,7 +443,7 @@ public class FullScreenActivity extends AppCompatActivity {
         MultiCamera ic_cam = MultiCamera.getInstance();
         ic_cam.setIsCameraOrSurveillance(0);
 
-        Open_Camera();
+        OpenCamera();
 
     }
 }

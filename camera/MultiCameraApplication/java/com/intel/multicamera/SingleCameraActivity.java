@@ -185,7 +185,7 @@ public class SingleCameraActivity extends AppCompatActivity {
                     closeCamera();
                     unregisterReceiver(mUsbReceiver);
                     startActivity(new Intent(getApplicationContext(), FullScreenActivity.class));
-                    ic_camera.setWhichCamera(1);
+                    ic_camera.setWhichCamera(0);
                     finishAffinity();
 
                     Log.i(TAG,"Opened back camera");
@@ -434,5 +434,9 @@ public class SingleCameraActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.e(TAG, " onResume");
+        MultiCamera ic_cam = MultiCamera.getInstance();
+        ic_cam.setIsCameraOrSurveillance(0);
+
+        OpenCamera();
     }
 }
