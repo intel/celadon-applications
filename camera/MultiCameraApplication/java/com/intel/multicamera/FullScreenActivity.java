@@ -177,6 +177,11 @@ public class FullScreenActivity extends AppCompatActivity {
                 mLastClickTime = SystemClock.elapsedRealtime();
                 MultiCamera ic_camera = MultiCamera.getInstance();
                 if (ic_camera.getWhichCamera() == 0) {
+			                    mCameraInst.setOpenCameraId(1);
+                    ic_camera.setWhichCamera(1);
+                    OpenCamera();
+                    Log.i(TAG,"Opened front camera");
+/*
                     mCameraInst.setOpenCameraId(1);
                     ic_camera.setWhichCamera(1);
                     Log.i(TAG,"Opened front camera");
@@ -185,9 +190,15 @@ public class FullScreenActivity extends AppCompatActivity {
                     unregisterReceiver(mUsbReceiver);
                     startActivity(new Intent(getApplicationContext(), FullScreenActivity.class));
                     ic_camera.setWhichCamera(1);
-                    finishAffinity();
+                    finishAffinity();*/
                 }
                 else {
+                    mCameraInst.setOpenCameraId(0);
+                    ic_camera.setWhichCamera(0);
+                    OpenCamera();
+                    Log.i(TAG,"Revert flicker Opened back camera");
+/*
+
                     mCameraInst.setOpenCameraId(0);
                     ic_camera.setWhichCamera(0);
                     Log.i(TAG,"Opened back camera");
@@ -195,7 +206,7 @@ public class FullScreenActivity extends AppCompatActivity {
                     unregisterReceiver(mUsbReceiver);
                     startActivity(new Intent(getApplicationContext(), FullScreenActivity.class));
                     ic_camera.setWhichCamera(0);
-                    finishAffinity();
+                    finishAffinity();*/
                 }
 
             }
