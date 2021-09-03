@@ -331,7 +331,6 @@ public class MultiViewActivity extends AppCompatActivity {
                  ic_camera.setOpenCameraId(0);
                  closeCamera();
                  ic_camera.setIsCameraOrSurveillance(0);
-                 unregisterReceiver(mUsbReceiver);
                  Intent intent = new Intent(MultiViewActivity.this, SingleCameraActivity.class);
                  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                  startActivity(intent);
@@ -377,7 +376,6 @@ public class MultiViewActivity extends AppCompatActivity {
                 ic_camera.setOpenCameraId(1);
                 closeCamera();
                 ic_camera.setIsCameraOrSurveillance(0);
-                unregisterReceiver(mUsbReceiver);
                 Intent intent = new Intent(MultiViewActivity.this, SingleCameraActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -423,7 +421,6 @@ public class MultiViewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ic_camera.setOpenCameraId(2);
                 closeCamera();
-                unregisterReceiver(mUsbReceiver);
                 Intent intent = new Intent(MultiViewActivity.this, SingleCameraActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -471,7 +468,6 @@ public class MultiViewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ic_camera.setOpenCameraId(3);
                 closeCamera();
-                unregisterReceiver(mUsbReceiver);
                 Intent intent = new Intent(MultiViewActivity.this, SingleCameraActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -1285,7 +1281,7 @@ public class MultiViewActivity extends AppCompatActivity {
         }
 
         closeCamera();
-        unregisterReceiver(mUsbReceiver);
+
         Intent intent = new Intent(MultiViewActivity.this, SingleCameraActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
